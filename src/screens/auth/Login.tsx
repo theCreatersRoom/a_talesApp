@@ -1,8 +1,10 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import AppText from '../../common/AppText';
+import {PropTypes} from './Login.types';
 
-export default function Login() {
+export default function Login(props: PropTypes) {
+  const {navigation} = props;
   const _renderHeaderSplash = () => {
     return (
       <View className="bg-red-500 w-full h-1/3 rounded-br-[99px]">
@@ -20,9 +22,13 @@ export default function Login() {
 
   const _renderLoginInputs = () => {
     return (
-      <View className="flex-1 px-4 pt-4">
+      <TouchableOpacity
+        className="flex-1 px-4 pt-4"
+        onPress={() => {
+          navigation.navigate('MainRoutes');
+        }}>
         <AppText size="lg">Login</AppText>
-      </View>
+      </TouchableOpacity>
     );
   };
   return (
