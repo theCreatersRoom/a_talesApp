@@ -3,13 +3,7 @@ import React from 'react';
 
 export default function HomePage() {
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'white',
-      }}>
+    <View className="flex-1 justify-center items-center bg-white">
       <Text>HomePage</Text>
     </View>
   );
