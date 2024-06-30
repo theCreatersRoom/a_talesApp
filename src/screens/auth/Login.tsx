@@ -14,7 +14,6 @@ export default function Login({navigation}: Props) {
   const navigateToResetPassword = () => {
     navigation.navigate('ForgotPassword');
   };
-
   const _renderHeaderSplash = () => {
     return (
       <View
