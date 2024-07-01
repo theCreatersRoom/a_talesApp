@@ -42,7 +42,19 @@ export default function Login({navigation}: Props) {
             Forgot Password?
           </AppText>
         </TouchableOpacity>
-        <AppButton className="mt-6" label="Login" />
+        <AppButton
+          onPress={() => navigation.navigate('MainRoutes')}
+          className="mt-6"
+          label="Login"
+        />
+        <View className="mt-4 items-center">
+          <AppText className="text-[14px] font-bold">OR</AppText>
+        </View>
+        <AppButton
+          onPress={() => navigation.navigate('Register')}
+          className="mt-6"
+          label="Create New Account"
+        />
       </View>
     );
   };
