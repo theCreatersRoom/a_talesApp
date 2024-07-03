@@ -3,7 +3,7 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import BottomNavigation from './BottomNavigation';
 import Header from './Header';
-import Notifcation from '../screens/Notification';
+import Notification from '../screens/Notification';
 
 const Stack = createNativeStackNavigator();
 
@@ -14,7 +14,7 @@ export default function MainRoutes() {
         header: props => <Header {...props} />,
       }}>
       <Stack.Screen name="BottomNavigation" component={BottomNavigation} />
-      <Stack.Screen name="Notification" component={Notifcation} />
+      <Stack.Screen name="Notification" component={Notification} />
     </Stack.Navigator>
   );
 }
