@@ -3,7 +3,8 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import BottomNavigation from './BottomNavigation';
 import Header from './Header';
-import Notification from '../screens/Notification';
+import Notifcation from '../screens/Notification';
+import StoryView from '../screens/story/StoryView';
 
 const Stack = createNativeStackNavigator();
 
@@ -14,7 +15,12 @@ export default function MainRoutes() {
         header: props => <Header {...props} />,
       }}>
       <Stack.Screen name="BottomNavigation" component={BottomNavigation} />
-      <Stack.Screen name="Notification" component={Notification} />
+      <Stack.Screen name="Notification" component={Notifcation} />
+      <Stack.Screen
+        name="StoryView"
+        component={StoryView}
+        options={{headerShown: false}}
+      />
     </Stack.Navigator>
   );
 }

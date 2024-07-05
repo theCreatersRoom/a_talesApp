@@ -1,8 +1,14 @@
 import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
+import AppButton from '../../common/AppButton';
+import {NavigationProp} from '@react-navigation/native';
 import {dummyData} from './assets/constanst';
 
-export default function HomePage() {
+type Props = {
+  navigation: NavigationProp<any>;
+};
+
+export default function HomePage({navigation}: Props) {
   const newData = dummyData;
   return (
     <View className="flex-1 justify-center items-center bg-white">
