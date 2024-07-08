@@ -12,7 +12,12 @@ import TaleTubeSvg from '../../routes/Header/assets/taleTubeSvg';
 import {screenHeight, screenWidth} from '../../utils/helper';
 import AppText from '../../common/AppText';
 import Carousel from 'react-native-reanimated-carousel';
-import {interpolate} from 'react-native-reanimated';
+import {
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+} from 'react-native-reanimated';
+import {Icon} from '../../common/Icon';
 
 type Props = {
   navigation: NavigationProp<any>;
@@ -42,6 +47,11 @@ const RIGHT_OFFSET = 40;
 
 export default function StoryView({navigation}: Props) {
   const [currentItem, setCurrentItem] = useState(0);
+
+  const onTouchTextBlock = (index: number) => {
+    setCurrentItem(index);
+  };
+
   const _renderHeaderLogo = () => {
     return (
       <TouchableOpacity
@@ -58,60 +68,70 @@ export default function StoryView({navigation}: Props) {
     return <View style={styles.media}></View>;
   };
 
-  const animationStyle: any = React.useCallback(
-    (value: number) => {
-      'worklet';
-
-      const translateY = interpolate(
-        value,
-        [-1, 0, 1],
-        [-ITEM_HEIGHT, 0, ITEM_HEIGHT],
-      );
-      const right = interpolate(
-        value,
-        [-1, -0.2, 1],
-        [RIGHT_OFFSET / 2, RIGHT_OFFSET, RIGHT_OFFSET / 3],
-      );
-      return {
-        transform: [{translateY}],
-        right,
-      };
-    },
-    [RIGHT_OFFSET],
-  );
+  const _renderMediaControls = () => {
+    return (
+      <View className="bg-blue-100 flex-row justify-between py-2 px-3">
+        <View className="px-2 bg-blue-400 rounded-lg items-center justify-center">
+          <Icon
+            type="MaterialIcons"
+            name="arrow-back-ios"
+            size={20}
+            color="white"
+          />
+        </View>
+        <View className="px-2 bg-blue-400 rounded-lg mx-2">
+          <Icon
+            type="MaterialCommunityIcons"
+            name="play"
+            size={30}
+            color="white"
+          />
+        </View>
+        <View className="px-2 bg-blue-400 rounded-lg items-center justify-center">
+          <Icon
+            type="MaterialIcons"
+            name="arrow-forward-ios"
+            size={20}
+            color="white"
+          />
+        </View>
+      </View>
+    );
+  };
 
   const _renderTextContent = () => {
     const contentList = content.split('. ');
     return (
-      <View className="px-4 pt-4 flex-1">
-        <Text className="text-[16px] font-bold">Chapter 1</Text>
+      <View className="px-4 flex-1">
         <View style={styles.flatList}>
-          <Carousel
-            vertical
-            width={screenWidth}
-            height={screenHeight * 0.5}
+          <FlatList
             data={contentList}
-            snapEnabled
-            customAnimation={animationStyle}
-            onSnapToItem={index => setCurrentItem(index)}
-            renderItem={({item, index}) => (
-              <View
-                style={{
-                  flex: 1,
-                  // borderWidth: 1,
-                  justifyContent: 'center',
-                  height: ITEM_HEIGHT,
-                  paddingLeft: 40,
-                }}>
-                <AppText
-                  className="text-[14px] mt-2"
+            contentContainerStyle={styles.content}
+            ListHeaderComponent={
+              <AppText className="text-[16px] text-gray-500 font-bold">
+                Chapter 1
+              </AppText>
+            }
+            renderItem={({item, index}) => {
+              return (
+                <TouchableOpacity
+                  onPress={onTouchTextBlock.bind(null, index)}
                   style={{
-                    fontWeight: currentItem === index ? 'bold' : 'normal',
+                    flex: 1,
+                    // borderWidth: 1,
+                    justifyContent: 'center',
                   }}>
-                  {item}
-                </AppText>
-              </View>
-            )}
+                  <AppText
+                    className="text-[14px] pt-2"
+                    style={{
+                      fontWeight: currentItem === index ? 'bold' : 'normal',
+                      fontSize: currentItem === index ? 15 : 14,
+                    }}>
+                    {item}
+                  </AppText>
+                </TouchableOpacity>
+              );
+            }}
           />
           {/* <Animated.FlatList
             data={contentList}
@@ -150,6 +170,7 @@ export default function StoryView({navigation}: Props) {
   return (
     <View className="flex-1 bg-white">
       {_renderMedia()}
+      {_renderMediaControls()}
       {_renderHeaderLogo()}
       {_renderTextContent()}
     </View>
@@ -159,12 +180,13 @@ export default function StoryView({navigation}: Props) {
 const styles = StyleSheet.create({
   media: {
     width: '100%',
-    height: screenHeight * 0.4,
+    height: screenHeight * 0.3,
     backgroundColor: 'gray',
   },
   content: {
     paddingBottom: screenHeight * 0.4,
-    paddingTop: screenHeight * 0.15,
+    // paddingTop: screenHeight * 0.15,
+    paddingTop: 20,
   },
   flatList: {
     flex: 1,

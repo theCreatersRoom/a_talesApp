@@ -10,12 +10,18 @@ type Props = {
 
 export default function HomePage({navigation}: Props) {
   const newData = dummyData;
+
+  const navigateToStory = (index: number) => {
+    navigation.navigate('StoryView', {index});
+  };
   return (
     <View className="flex-1 justify-center items-center bg-white">
       <FlatList
         data={newData}
         renderItem={({item, index}) => (
-          <TouchableOpacity className="w-[380] h-[180] m-[16] justify-center p-[16] bg-cyan-600 rounded-lg">
+          <TouchableOpacity
+            onPress={navigateToStory.bind(null, index)}
+            className="h-[180] m-[16] justify-center p-[16] bg-cyan-600 rounded-lg">
             <Text className="text-white">{item?.title}</Text>
             <Text className="text-white">{item?.brief}</Text>
           </TouchableOpacity>
