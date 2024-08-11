@@ -1,6 +1,6 @@
 export type IconType = {
   type: 'MaterialCommunityIcons' | 'MaterialIcons';
   name: string;
-  size: number;
-  color: string;
+  size?: number;
+  color?: string;
 };

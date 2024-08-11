@@ -29,7 +29,7 @@ export default function Header(props: any) {
         onPress={() => {
           navigation.navigate('Home');
         }}>
-        <TaleTubeSvg />
+        <TaleTubeSvg width={70} />
       </TouchableOpacity>
     );
   };
@@ -51,7 +51,7 @@ export default function Header(props: any) {
         <Icon
           type="MaterialCommunityIcons"
           name="bell-outline"
-          size={30}
+          size={28}
           color="black"
         />
       </TouchableOpacity>
