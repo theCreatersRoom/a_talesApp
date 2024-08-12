@@ -16,15 +16,17 @@ const FONT_SIZES = {
 };
 
 export default function AppText({
-  size = 'md',
+  size = 'sm',
   weight = 'normal',
   color = 'black',
+  className,
   children,
   ...props
 }: Props) {
   return (
     <Text
       style={{fontSize: FONT_SIZES[size], fontWeight: weight, color}}
+      className={'text-[#000] ' + className}
       {...props}>
       {children}
     </Text>

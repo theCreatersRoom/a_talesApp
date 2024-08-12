@@ -15,7 +15,7 @@ type Props = {
 export default function AppInput({style, ...props}: Props) {
   return (
     <View className="border-[1px] border-[#F9D3D3] rounded-[8px]" style={style}>
-      <TextInput {...props} style={styles.input} />
+      <TextInput {...props} style={styles.input} textAlignVertical="top" />
     </View>
   );
 }
@@ -23,6 +23,8 @@ export default function AppInput({style, ...props}: Props) {
 const styles = StyleSheet.create({
   input: {
     width: '100%',
-    paddingHorizontal: 10,
+    paddingHorizontal: 12,
+    marginVertical: 2,
+    fontSize: 12,
   },
 });

@@ -17,7 +17,7 @@ export default function BottomNavigation() {
       tabBar={props => <MyTabBar {...props} />}>
       <Tab.Screen name="Home" component={HomePage} />
       <Tab.Screen name="Popular" component={Popular} />
-      <Tab.Screen name="Create" component={CreateNew} />
+      <Tab.Screen name="Create" component={HomePage} />
       <Tab.Screen name="Tutorial" component={Tutorial} />
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>

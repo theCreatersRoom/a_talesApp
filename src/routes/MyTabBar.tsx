@@ -5,21 +5,7 @@ import {Icon} from '../common/Icon';
 export const MyTabBar = (props: any) => {
   const {state, descriptors, navigation} = props;
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        paddingVertical: 4,
-        paddingHorizontal: 10,
-        shadowOffset: {
-          width: 0,
-          height: -1,
-        },
-        shadowOpacity: 0.1,
-        shadowRadius: 4.0,
-        backgroundColor: 'white',
-        elevation: 10,
-      }}>
+    <View style={styles.tabBar}>
       {state.routes.map((route: any, index: number) => {
         const {options} = descriptors[route.key];
         const label =
@@ -39,7 +25,11 @@ export const MyTabBar = (props: any) => {
           });
 
           if (!isFocused && !event.defaultPrevented) {
-            navigation.navigate(route.name, route.params);
+            if (route.name === 'Create') {
+              navigation.navigate('CreateStory');
+            } else {
+              navigation.navigate(route.name, route.params);
+            }
           }
         };
 
@@ -100,4 +90,19 @@ export const MyTabBar = (props: any) => {
   );
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  tabBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    shadowOffset: {
+      width: 0,
+      height: -1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4.0,
+    backgroundColor: 'white',
+    elevation: 10,
+  },
+});

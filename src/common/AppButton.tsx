@@ -22,7 +22,7 @@ export default function AppButton({style, label, className, onPress}: Props) {
       className={'bg-[#db3f3f] rounded-[8px] py-2.5 items-center ' + className}
       style={style}
       onPress={onPress}>
-      <AppText className="text-white">{label}</AppText>
+      <AppText className="text-white font-bold">{label}</AppText>
     </TouchableOpacity>
   );
 }
