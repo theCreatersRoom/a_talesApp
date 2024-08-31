@@ -18,15 +18,17 @@ interface ItemSelectorModalProps {
   onClose?: (item: any | null) => void;
   items: any[];
   dataKey: string;
-  selected?: null;
-  onSelectItem?: (item: null) => void;
+  selected?: any;
+  postfix?: string;
+  onSelectItem?: (item: any) => void;
 }
 
-const ItemSelectorDropdown: React.FC<ItemSelectorModalProps> = ({
+const AppDropdown: React.FC<ItemSelectorModalProps> = ({
   onClose = () => {},
   items,
   dataKey,
   selected,
+  postfix = '',
   onSelectItem = () => {},
 }) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -60,9 +62,8 @@ const ItemSelectorDropdown: React.FC<ItemSelectorModalProps> = ({
               showsVerticalScrollIndicator={false}
               renderItem={({item}) => (
                 <TouchableOpacity
-                  className="flex-row justify-between items-center p-2 border-b border-b-gray-200"
+                  className="flex-row justify-between items-center py-2 px-6 border-b border-b-gray-200"
                   style={[
-                    styles.item,
                     selected &&
                       selected[dataKey] === item[dataKey] &&
                       styles.selectedItem,
@@ -82,8 +83,11 @@ const ItemSelectorDropdown: React.FC<ItemSelectorModalProps> = ({
           onPress={() => setIsVisible(true)}>
           <AppText
             className="text-[12px]"
-            style={{color: selected ? Colors.primary : 'gray'}}>
-            {selected ? selected[dataKey] : 'Select an Item'}
+            style={{color: selected?.[dataKey] ? 'black' : Colors.grey}}>
+            {selected?.[dataKey] || 'Select an Item'}{' '}
+            {selected?.[dataKey] && (
+              <AppText color={Colors.grey}>{' ' + postfix}</AppText>
+            )}
           </AppText>
           <Icon type="MaterialCommunityIcons" name="chevron-down" size={20} />
         </TouchableOpacity>
@@ -103,7 +107,7 @@ const styles = StyleSheet.create({
   modalContainer: {
     backgroundColor: 'white',
     borderRadius: 8,
-    padding: 16,
+    paddingVertical: 16,
     width: '95%',
     marginBottom: 16,
     maxHeight: '80%',
@@ -112,13 +116,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 16,
-  },
-  item: {
-    padding: 8,
+    paddingHorizontal: 16,
   },
   selectedItem: {
-    backgroundColor: 'blue',
+    backgroundColor: '#fa7083',
   },
 });
 
-export default ItemSelectorDropdown;
+export default AppDropdown;
