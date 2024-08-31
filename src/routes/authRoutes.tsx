@@ -14,7 +14,6 @@ export default function AuthRoutes() {
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
       <Stack.Screen name="Register" component={Register} />
-      <Stack.Screen name="MainRoutes" component={MainRoutes} />
     </Stack.Navigator>
   );
 }
