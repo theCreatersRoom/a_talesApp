@@ -8,14 +8,15 @@ import Loader from '../common/Loader';
 import {useLoadingStore} from '../store/loadingStore';
 import {useAuthStore} from '../store/authStore';
 import axios from 'axios';
-import {addTokenToHeaders} from '../utils/api';
+import API, {addTokenToHeaders} from '../utils/api';
 import {getUserData} from '../services/authServices';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function App() {
   const token = useAuthStore(state => state.token);
   const setAuthState = useAuthStore(state => state.setAuthState);
-  console.log('🚀 ~ App ~ token:', token);
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  // console.log('🚀 ~ App ~ token:', token);
   const loading = useLoadingStore(state => state.loading);
 
   useEffect(() => {
@@ -23,7 +24,8 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    axios.interceptors.request.use(config => addTokenToHeaders(config, token));
+    API.interceptors.request.use(config => addTokenToHeaders(config, token));
+    setIsLoggedIn(!!token);
   }, [token]);
 
   async function getToken() {
@@ -39,7 +41,7 @@ export default function App() {
   return (
     <View className="flex-1">
       <NavigationContainer>
-        {token ? <MainRoutes /> : <AuthRoutes />}
+        {isLoggedIn ? <MainRoutes /> : <AuthRoutes />}
         <Loader laoding={loading} />
       </NavigationContainer>
       <Toast />

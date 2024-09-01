@@ -14,6 +14,7 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import Toast from 'react-native-toast-message';
 import {createNewStory} from '../../services/storyServices';
 import {useAuthStore} from '../../store/authStore';
+import {useLoadingStore} from '../../store/loadingStore';
 
 const DATA = Array(100)
   .fill(0)
@@ -34,9 +35,9 @@ const validationSchema = Yup.object().shape({
     .required('Description is required')
     .min(10, 'Description must be at least 10 characters long'),
   tags: Yup.string(),
-  chapters: Yup.number()
-    .required('Chapters count is required')
-    .min(1, 'Chapters count must be at least 1'),
+  // chapters: Yup.number()
+  //   .required('Chapters count is required')
+  //   .min(1, 'Chapters count must be at least 1'),
 });
 
 export default function CreateNew({navigation}: Props) {
@@ -48,9 +49,10 @@ export default function CreateNew({navigation}: Props) {
     resolver: yupResolver(validationSchema),
   });
   const userData = useAuthStore(state => state.userData);
-  console.log('🚀 ~ CreateNew ~ userData:', userData);
+  const setLoader = useLoadingStore(state => state.setLoader);
 
   const onSubmit = async (data: Yup.InferType<typeof validationSchema>) => {
+    setLoader(true);
     try {
       let newTags: string[] = [];
       if (data.tags) {
@@ -60,15 +62,23 @@ export default function CreateNew({navigation}: Props) {
         title: data.title,
         description: data.description,
         tags: newTags,
-        chapters: data.chapters,
-        userId: userData!._id,
+        // chapters: data.chapters,
+        author: userData!._id,
       });
+      if (result) {
+        Toast.show({
+          type: 'success',
+          text1: 'Story created successfully',
+        });
+        navigation.navigate('StoryDetails', {id: result._id});
+      }
     } catch (err: any) {
       Toast.show({
         type: 'error',
-        text1: err.response?.data?.message,
+        text1: 'Something went wrong',
       });
     }
+    setLoader(false);
   };
 
   return (
@@ -142,7 +152,7 @@ export default function CreateNew({navigation}: Props) {
           <Text style={{color: 'red'}}>{errors.tags.message}</Text>
         )}
       </View>
-      <View className="mt-6 border-t border-t-[#FFB8B8] pt-4">
+      {/* <View className="mt-6 border-t border-t-[#FFB8B8] pt-4">
         <AppText className="text-[14px] mb-2">Chapters*</AppText>
 
         <Controller
@@ -163,7 +173,7 @@ export default function CreateNew({navigation}: Props) {
             {errors.chapters.message}
           </AppText>
         )}
-      </View>
+      </View> */}
       <AppButton
         className="mt-6"
         label="Continue"

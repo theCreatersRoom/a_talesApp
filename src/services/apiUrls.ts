@@ -7,4 +7,10 @@ export const RESET_PASSWORD_URL = '/auth/reset-password';
 export const USER_PROFILE_URL = '/user/profile';
 export const USER_PROFILE_UPDATE_URL = '/user/profile/update';
 
-export const STORY_URL = '/story/newStory';
+export const NEW_STORY_URL = '/story/newStory';
+export const STORY_DETAILS = '/story';
+export const USER_STORIES_DETAILS = '/story/getStorysByUser';
+export const CHAPTER_DETAILS = '/chapter';
+export const NEW_CHAPTER = '/chapter/newChapter';
+export const UPDATE_CHAPTER = '/chapter/updateChapter';
+export const DELETE_CHAPTER = '/chapter/deleteChapter';

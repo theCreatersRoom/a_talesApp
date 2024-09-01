@@ -6,6 +6,10 @@ import {Icon} from '../../common/Icon';
 export default function Header(props: any) {
   const {navigation, route} = props;
 
+  const onSearchPress = () => {
+    navigation.navigate('StoryDetails', {id: '66d35f6dced11d1c54295903'});
+  };
+
   const renderBackButton = () => {
     return (
       <TouchableOpacity
@@ -36,7 +40,7 @@ export default function Header(props: any) {
 
   const renderSearchIcon = () => {
     return (
-      <TouchableOpacity>
+      <TouchableOpacity onPress={onSearchPress}>
         <Icon type="MaterialIcons" name="search" size={30} color="black" />
       </TouchableOpacity>
     );
