@@ -1,13 +1,14 @@
 import {
   Animated,
   FlatList,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useRef, useState} from 'react';
-import {NavigationProp} from '@react-navigation/native';
+import React, {useEffect, useRef, useState} from 'react';
+import {NavigationProp, RouteProp} from '@react-navigation/native';
 import TaleTubeSvg from '../../routes/Header/assets/taleTubeSvg';
 import {screenHeight, screenWidth} from '../../utils/helper';
 import AppText from '../../common/AppText';
@@ -18,9 +19,19 @@ import {
   useSharedValue,
 } from 'react-native-reanimated';
 import {Icon} from '../../common/Icon';
+import {ChapterType, StoryType} from '../../services/types/storyServices.type';
+import {
+  fetchChpaterDetails,
+  fetchStoryDetails,
+} from '../../services/storyServices';
+import PagerView from 'react-native-pager-view';
+import LinearGradient from 'react-native-linear-gradient';
+import {useAuthStore} from '../../store/authStore';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 type Props = {
-  navigation: NavigationProp<any>;
+  navigation: NativeStackNavigationProp<any, any>;
+  route: RouteProp<any>;
 };
 
 const content = `
@@ -45,11 +56,58 @@ including versions of Lorem Ipsum.`;
 const ITEM_HEIGHT = 100;
 const RIGHT_OFFSET = 40;
 
-export default function StoryView({navigation}: Props) {
-  const [currentItem, setCurrentItem] = useState(0);
+export default function StoryView({navigation, route}: Props) {
+  const storyId = route.params?.storyId;
+  const [story, setStory] = useState<StoryType>();
+  const [chapters, setChapters] = useState<ChapterType[]>();
+  const userData = useAuthStore(state => state.userData);
 
-  const onTouchTextBlock = (index: number) => {
-    setCurrentItem(index);
+  useEffect(() => {
+    if (storyId) {
+      getStoryDetails(storyId);
+    }
+  }, [storyId]);
+
+  const getStoryDetails = async (id: string) => {
+    try {
+      const result = await fetchStoryDetails(id);
+      if (result) {
+        setStory(result);
+        let chaptersData: ChapterType[] = [];
+        if (result.chapters.length == 0) {
+          navigation.replace('StoryDetails', {id: storyId});
+          return;
+        }
+        for (let item of result.chapters) {
+          const result = await getChapterDetails(item.chapterId);
+          if (result) {
+            chaptersData.push(result);
+          }
+        }
+        setChapters(chaptersData);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getChapterDetails = async (id: string) => {
+    try {
+      const result = await fetchChpaterDetails(id);
+      if (result) {
+        return result;
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const onBackPress = () => {
+    navigation.goBack();
+  };
+
+  const onEditPress = () => {
+    navigation.replace('StoryDetails', {id: storyId});
   };
 
   const _renderHeaderLogo = () => {
@@ -65,103 +123,65 @@ export default function StoryView({navigation}: Props) {
   };
 
   const _renderMedia = () => {
-    return <View style={styles.media}></View>;
-  };
-
-  const _renderMediaControls = () => {
     return (
-      <View className="bg-blue-100 flex-row justify-between py-2 px-3">
-        <View className="px-2 bg-blue-400 rounded-lg items-center justify-center">
-          <Icon
-            type="MaterialIcons"
-            name="arrow-back-ios"
-            size={20}
-            color="white"
-          />
-        </View>
-        <View className="px-2 bg-blue-400 rounded-lg mx-2">
-          <Icon
-            type="MaterialCommunityIcons"
-            name="play"
-            size={30}
-            color="white"
-          />
-        </View>
-        <View className="px-2 bg-blue-400 rounded-lg items-center justify-center">
-          <Icon
-            type="MaterialIcons"
-            name="arrow-forward-ios"
-            size={20}
-            color="white"
-          />
+      <View style={styles.media}>
+        <View className="flex-1 justify-center items-center">
+          <AppText className="font-bold text-[18px]">{story?.title}</AppText>
         </View>
       </View>
     );
   };
 
-  const _renderTextContent = () => {
-    const contentList = content.split('. ');
+  const _renderPage = (chapter: ChapterType) => {
     return (
-      <View className="px-4 flex-1">
-        <View style={styles.flatList}>
-          <FlatList
-            data={contentList}
-            contentContainerStyle={styles.content}
-            ListHeaderComponent={
-              <AppText className="text-[16px] text-gray-500 font-bold">
-                Chapter 1
+      <View className="flex-1 bg-black">
+        {_renderMedia()}
+        <ScrollView key="1" className="flex-1 ">
+          <View style={styles.content}>
+            <LinearGradient
+              locations={[0, 0.9]}
+              style={styles.gradiant}
+              colors={['rgba(255, 255, 255, 0.02)', '#000']}>
+              <AppText className="text-[18px] text-white font-bold pb-4">
+                {chapter.title}
               </AppText>
-            }
-            renderItem={({item, index}) => {
-              return (
-                <TouchableOpacity
-                  onPress={onTouchTextBlock.bind(null, index)}
-                  style={{
-                    flex: 1,
-                    // borderWidth: 1,
-                    justifyContent: 'center',
-                  }}>
-                  <AppText
-                    className="text-[14px] pt-2"
-                    style={{
-                      fontWeight: currentItem === index ? 'bold' : 'normal',
-                      fontSize: currentItem === index ? 15 : 14,
-                    }}>
-                    {item}
-                  </AppText>
-                </TouchableOpacity>
-              );
-            }}
+            </LinearGradient>
+            <View className="bg-black px-4">
+              <AppText
+                className={`text-[16px] w-[${screenWidth - 32}]} text-white`}>
+                {chapter.content}
+              </AppText>
+            </View>
+          </View>
+        </ScrollView>
+        <TouchableOpacity
+          onPress={onBackPress}
+          className="rounded-[99px] bg-[#0000009e]  w-9 h-9 absolute items-center justify-center left-3 top-3">
+          <Icon
+            type="MaterialIcons"
+            name="arrow-back"
+            size={25}
+            color={'white'}
           />
-          {/* <Animated.FlatList
-            data={contentList}
-            keyExtractor={(item, index) => index.toString()}
-            onScroll={Animated.event(
-              [{nativeEvent: {contentOffset: {y: scrollY}}}],
-              {useNativeDriver: true},
-            )}
-            style={{flexGrow: 0}}
-            contentContainerStyle={styles.content}
-            snapToInterval={100}
-            renderItem={({item, index}) => {
-             
-              return (
-                <Animated.View
-                  style={{
-                    height: 100,
-                    // backgroundColor: 'red',
-                    transform: [{scale: translateSize}],
-                    // borderWidth: 2,
-                    marginBottom: 4,
-                    alignItems: 'center',
-                  }}>
-                  <AppText className="text-[14px] mt-2 text-center">
-                    {item}
-                  </AppText>
-                </Animated.View>
-              );
-            }}
-          /> */}
+        </TouchableOpacity>
+        {story?.author === userData?._id && (
+          <TouchableOpacity
+            onPress={onEditPress}
+            className="rounded-[99px] bg-[#0000009e] w-9 h-9 absolute items-center justify-center right-3 top-3">
+            <Icon type="FontAwesome" name="edit" size={18} color={'white'} />
+          </TouchableOpacity>
+        )}
+      </View>
+    );
+  };
+
+  const _renderTextContent = () => {
+    return (
+      <View className="flex-1 ">
+        <View style={styles.flatList}>
+          <PagerView className="flex-1" initialPage={0}>
+            {chapters?.map((item, index) => _renderPage(item))}
+          </PagerView>
         </View>
       </View>
     );
@@ -169,8 +189,7 @@ export default function StoryView({navigation}: Props) {
 
   return (
     <View className="flex-1 bg-white">
-      {_renderMedia()}
-      {_renderMediaControls()}
+      {/* {_renderMediaControls()} */}
       {_renderHeaderLogo()}
       {_renderTextContent()}
     </View>
@@ -181,14 +200,20 @@ const styles = StyleSheet.create({
   media: {
     width: '100%',
     height: screenHeight * 0.3,
-    backgroundColor: 'gray',
+    backgroundColor: 'lightblue',
+    position: 'absolute',
+    top: 0,
   },
   content: {
-    paddingBottom: screenHeight * 0.4,
     // paddingTop: screenHeight * 0.15,
-    paddingTop: 20,
+    // backgroundColor: 'black',
+    // paddingHorizontal: 16,
   },
   flatList: {
     flex: 1,
+  },
+  gradiant: {
+    paddingHorizontal: 16,
+    paddingTop: screenHeight * 0.28,
   },
 });

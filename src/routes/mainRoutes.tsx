@@ -8,6 +8,7 @@ import StoryView from '../screens/story/StoryView';
 import ChapterDetails from '../screens/CreateScreen/ChapterDetails';
 import StorySuccess from '../screens/CreateScreen/StorySuccess';
 import CreateNew from '../screens/CreateScreen/CreateNew';
+import StoryDetails from '../screens/CreateScreen/StoryDetails';
 
 const Stack = createNativeStackNavigator();
 
@@ -25,6 +26,7 @@ export default function MainRoutes() {
         component={StoryView}
         options={{headerShown: false}}
       />
+      <Stack.Screen name="StoryDetails" component={StoryDetails} />
       <Stack.Screen name="ChapterDetails" component={ChapterDetails} />
       <Stack.Screen name="StorySuccess" component={StorySuccess} />
     </Stack.Navigator>
