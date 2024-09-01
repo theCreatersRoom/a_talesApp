@@ -52,28 +52,32 @@ export default function HomePage({navigation}: Props) {
   const _renderMyStorySection = () => {
     return (
       <View className="">
-        <AppText className="text-[16px] font-bold px-4 pt-4 pb-2">
-          My Stories
-        </AppText>
-        <View className="bg-gray-200 h-[1px] mx-4" />
-        <ScrollView
-          horizontal
-          className="py-2"
-          showsHorizontalScrollIndicator={false}>
-          {myStories.map(story => (
-            <TouchableOpacity
-              onPress={navigateToStory.bind(null, story)}
-              className="mx-3 bg-[#05C02B] rounded-md h-[100px] w-[200px] justify-end py-3 px-3"
-              key={story._id}>
-              <AppText className="text-[14px] font-bold text-white">
-                {story.title}
-              </AppText>
-              <AppText className="text-[10px] text-white" numberOfLines={2}>
-                {story.description}
-              </AppText>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
+        {myStories.length > 0 && (
+          <View>
+            <AppText className="text-[16px] font-bold px-4 pt-4 pb-2">
+              My Stories
+            </AppText>
+            <View className="bg-gray-200 h-[1px] mx-4" />
+            <ScrollView
+              horizontal
+              className="py-2"
+              showsHorizontalScrollIndicator={false}>
+              {myStories.map(story => (
+                <TouchableOpacity
+                  onPress={navigateToStory.bind(null, story)}
+                  className="mx-3 bg-[#05C02B] rounded-md h-[100px] w-[200px] justify-end py-3 px-3"
+                  key={story._id}>
+                  <AppText className="text-[14px] font-bold text-white">
+                    {story.title}
+                  </AppText>
+                  <AppText className="text-[10px] text-white" numberOfLines={2}>
+                    {story.description}
+                  </AppText>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        )}
         <AppText className="text-[16px] font-bold px-4 pt-4 pb-2">
           Popular
         </AppText>
